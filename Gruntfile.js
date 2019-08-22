@@ -119,11 +119,14 @@ module.exports = function (grunt) {
 					build: process.env.TRAVIS_JOB_ID,
 					statusCheckAttempts: -1,
 					throttled: 3,
+					sauceConfig: {
+						'video-upload-on-pass': false
+					},
 					browsers: [
 						{
 							browserName: 'safari',
 							platform: 'macOS 10.13',
-							version: '12.0'
+							version: '12.1'
 						},
 						{
 							browserName: 'safari',
@@ -133,17 +136,12 @@ module.exports = function (grunt) {
 						{
 							browserName: 'firefox',
 							platform: 'macOS 10.13',
-							version: '65.0'
+							version: '68.0'
 						},
 						{
 							browserName: 'chrome',
 							platform: 'macOS 10.13',
-							version: '72.0'
-						},
-						{
-							browserName: 'safari',
-							platform: 'macOS 10.12',
-							version: '11.0'
+							version: '76.0'
 						},
 						{
 							browserName: 'internet explorer',
