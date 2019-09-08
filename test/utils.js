@@ -1,44 +1,9 @@
-// https://github.com/axemclion/grunt-saucelabs#test-result-details-with-qunit
 (function () {
 	'use strict';
-
-	var log = [];
-
-	QUnit.done(function (test_results) {
-		var tests = [];
-		for (var i = 0, len = log.length; i < len; i++) {
-			var details = log[i];
-			tests.push({
-				name: details.name,
-				result: details.result,
-				expected: details.expected,
-				actual: details.actual,
-				source: details.source
-			});
-		}
-		test_results.tests = tests;
-		// Required for exposing test results to the Sauce Labs API.
-		// Can be removed when the following issue is fixed:
-		// https://github.com/axemclion/grunt-saucelabs/issues/84
-		window.global_test_results = test_results;
-	});
-
-	QUnit.testStart(function (testDetails) {
-		QUnit.log(function (details) {
-			if (!details.result) {
-				details.name = testDetails.name;
-				log.push(details);
-			}
-		});
-	});
 
 	window.lifecycle = {
 		afterEach: function () {
 			// Remove the cookies created using js-cookie default attributes
-			// Note: Using `Object.keys(Cookies.get()).forEach(Cookies.remove)`
-			// would cause IE 6 + 7 to break with a "Object doesn't support
-			// this property or method" error, thus wrapping it with a
-			// function.
 			Object.keys(Cookies.get()).forEach(function (cookie) {
 				Cookies.remove(cookie);
 			});
@@ -49,15 +14,6 @@
 				});
 			});
 		}
-	};
-
-	window.addEvent = function (element, eventName, fn) {
-		var method = 'addEventListener';
-		if (element.attachEvent) {
-			eventName = 'on' + eventName;
-			method = 'attachEvent';
-		}
-		element[ method ](eventName, fn);
 	};
 
 	window.using = function (assert) {
@@ -89,7 +45,7 @@
 							'&value=' + encodeURIComponent(value)
 						].join('');
 						var done = assert.async();
-						addEvent(iframe, 'load', function () {
+						iframe.addEventListener('load', function () {
 							var iframeDocument = iframe.contentWindow.document;
 							var root = iframeDocument.documentElement;
 							var content = root.textContent;
