@@ -15,7 +15,7 @@ function decode (s) {
 }
 
 function init (converter) {
-  function api () { }
+  var defaults = {}
 
   function set (key, value, attributes) {
     if (typeof document === 'undefined') {
@@ -26,14 +26,12 @@ function init (converter) {
       {
         path: '/'
       },
-      api.defaults,
+      defaults,
       attributes
     )
 
     if (typeof attributes.expires === 'number') {
-      attributes.expires = new Date(
-        new Date() * 1 + attributes.expires * 864e5
-      )
+      attributes.expires = new Date(new Date() * 1 + attributes.expires * 864e5)
     }
 
     attributes.expires = attributes.expires
@@ -45,7 +43,7 @@ function init (converter) {
       if (/^[{[]/.test(result)) {
         value = result
       }
-    } catch (e) { }
+    } catch (e) {}
 
     value = converter.write
       ? converter.write(value, key)
@@ -107,7 +105,7 @@ function init (converter) {
         if (json) {
           try {
             cookie = JSON.parse(cookie)
-          } catch (e) { }
+          } catch (e) {}
         }
 
         jar[name] = cookie
@@ -115,34 +113,38 @@ function init (converter) {
         if (key === name) {
           break
         }
-      } catch (e) { }
+      } catch (e) {}
     }
 
     return key ? jar[key] : jar
   }
 
-  api.set = set
-  api.get = function (key) {
-    return get(key, false /* read as raw */)
+  return {
+    defaults: defaults,
+    set: set,
+    get: function (key) {
+      if (arguments.length && !key) {
+        return
+      }
+      return get(key /* read as raw */)
+    },
+    getJSON: function (key) {
+      if (arguments.length && !key) {
+        return
+      }
+      return get(key, true /* read as json */)
+    },
+    remove: function (key, attributes) {
+      set(
+        key,
+        '',
+        extend(attributes, {
+          expires: -1
+        })
+      )
+    },
+    withConverter: init
   }
-  api.getJSON = function (key) {
-    return get(key, true /* read as json */)
-  }
-  api.remove = function (key, attributes) {
-    set(
-      key,
-      '',
-      extend(attributes, {
-        expires: -1
-      })
-    )
-  }
-
-  api.defaults = {}
-
-  api.withConverter = init
-
-  return api
 }
 
-export default init(function () { })
+export default init(function () {})
