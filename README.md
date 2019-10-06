@@ -2,7 +2,7 @@
   <img src="https://cloud.githubusercontent.com/assets/835857/14581711/ba623018-0436-11e6-8fce-d2ccd4d379c9.gif">
 </p>
 
-# JavaScript Cookie [![Build Status](https://travis-ci.org/js-cookie/js-cookie.svg?branch=master)](https://travis-ci.org/js-cookie/js-cookie) [![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=b3VDaHAxVDg0NDdCRmtUOWg0SlQzK2NsRVhWTjlDQS9qdGJoak1GMzJiVT0tLVhwZHNvdGRoY284YVRrRnI3eU1JTnc9PQ==--5e88ffb3ca116001d7ef2cfb97a4128ac31174c2)](https://www.browserstack.com/automate/public-build/b3VDaHAxVDg0NDdCRmtUOWg0SlQzK2NsRVhWTjlDQS9qdGJoak1GMzJiVT0tLVhwZHNvdGRoY284YVRrRnI3eU1JTnc9PQ==--5e88ffb3ca116001d7ef2cfb97a4128ac31174c2) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com) [![Code Climate](https://codeclimate.com/github/js-cookie/js-cookie.svg)](https://codeclimate.com/github/js-cookie/js-cookie) [![npm](https://img.shields.io/npm/v/js-cookie)](https://www.npmjs.com/package/js-cookie) [![jsDelivr Hits](https://data.jsdelivr.com/v1/package/npm/js-cookie/badge?style=rounded)](https://www.jsdelivr.com/package/npm/js-cookie)
+# JavaScript Cookie [![Build Status](https://travis-ci.org/js-cookie/js-cookie.svg?branch=master)](https://travis-ci.org/js-cookie/js-cookie) [![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=b3VDaHAxVDg0NDdCRmtUOWg0SlQzK2NsRVhWTjlDQS9qdGJoak1GMzJiVT0tLVhwZHNvdGRoY284YVRrRnI3eU1JTnc9PQ==--5e88ffb3ca116001d7ef2cfb97a4128ac31174c2)](https://www.browserstack.com/automate/public-build/b3VDaHAxVDg0NDdCRmtUOWg0SlQzK2NsRVhWTjlDQS9qdGJoak1GMzJiVT0tLVhwZHNvdGRoY284YVRrRnI3eU1JTnc9PQ==--5e88ffb3ca116001d7ef2cfb97a4128ac31174c2) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com) [![Code Climate](https://codeclimate.com/github/js-cookie/js-cookie.svg)](https://codeclimate.com/github/js-cookie/js-cookie) [![npm](https://img.shields.io/github/package-json/v/js-cookie/js-cookie)](https://www.npmjs.com/package/js-cookie) [![jsDelivr Hits](https://data.jsdelivr.com/v1/package/npm/js-cookie/badge?style=rounded)](https://www.jsdelivr.com/package/npm/js-cookie)
 
 A simple, lightweight JavaScript API for handling cookies
 
@@ -10,13 +10,12 @@ A simple, lightweight JavaScript API for handling cookies
 - Accepts [any](#encoding) character
 - [Heavily](test) tested
 - No dependency
-- [Unobtrusive](#json) JSON support
 - Supports ES modules
 - Supports AMD/CommonJS
 - [RFC 6265](https://tools.ietf.org/html/rfc6265) compliant
 - Useful [Wiki](https://github.com/js-cookie/js-cookie/wiki)
 - Enable [custom encoding/decoding](#converters)
-- **~900 bytes** gzipped!
+- **< 800 bytes** gzipped!
 
 **If you're viewing this at https://github.com/js-cookie/js-cookie, you're reading the documentation for the master branch.
 [View documentation for the latest release.](https://github.com/js-cookie/js-cookie/tree/latest#readme)**
@@ -63,8 +62,19 @@ Here we're loading the nomodule script in a deferred fashion, because ES modules
 
 Alternatively, include it via [jsDelivr CDN](https://www.jsdelivr.com/package/npm/js-cookie):
 
+UMD:
+
 ```html
-<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
+```
+
+ES module:
+
+```html
+<script
+  type="module"
+  src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.mjs"
+></script>
 ```
 
 **Never include the source directly from GitHub (http://raw.github.com/...).** The file
@@ -157,36 +167,6 @@ Cookies2.set('name', 'value')
 ```
 
 _Note: The `.noConflict` method is not necessary when using AMD or CommonJS, thus it is not exposed in those environments._
-
-## JSON
-
-js-cookie provides unobtrusive JSON storage for cookies.
-
-When creating a cookie you can pass an Array or Object Literal instead of a string in the value. If you do so, js-cookie will store the string representation of the object according to `JSON.stringify`:
-
-```javascript
-Cookies.set('name', { foo: 'bar' })
-```
-
-When reading a cookie with the default `Cookies.get` api, you receive the string representation stored in the cookie:
-
-```javascript
-Cookies.get('name') // => '{"foo":"bar"}'
-```
-
-```javascript
-Cookies.get() // => { name: '{"foo":"bar"}' }
-```
-
-When reading a cookie with the `Cookies.getJSON` api, you receive the parsed representation of the string stored in the cookie according to `JSON.parse`:
-
-```javascript
-Cookies.getJSON('name') // => { foo: 'bar' }
-```
-
-```javascript
-Cookies.getJSON() // => { name: { foo: 'bar' } }
-```
 
 ## Encoding
 
