@@ -259,6 +259,20 @@ Cookies.get('name') // => 'value'
 Cookies.remove('name')
 ```
 
+### sameSite
+
+A [`String`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), with possible values `lax` or `strict`, prevents the browser from sending cookie along with cross-site requests.
+
+Default: not set, i.e. include cookie in any request.
+
+**Examples:**
+
+```javascript
+Cookies.set('name', 'value', { sameSite: 'lax' })
+Cookies.get('name') // => 'value'
+Cookies.remove('name')
+```
+
 ## Converters
 
 ### Read
@@ -295,6 +309,12 @@ Cookies.withConverter({
     // Write converter
   }
 })
+```
+
+## TypeScript declarations
+
+```
+$ npm i @types/js-cookie
 ```
 
 ## Server-side integration
