@@ -439,7 +439,7 @@ QUnit.test(
     assert.expect(1)
     document.cookie = 'c=%u5317%u4eac'
     assert.strictEqual(
-      Cookies.withConverter(unescape).get('c'),
+      Cookies.withConverter({ read: unescape }).get('c'),
       '北京',
       'should convert chinese characters correctly'
     )
@@ -451,7 +451,7 @@ QUnit.test(
   function (assert) {
     assert.expect(1)
     document.cookie = 'c=%E3'
-    var cookies = Cookies.withConverter(unescape)
+    var cookies = Cookies.withConverter({ read: unescape })
     assert.strictEqual(
       cookies.get('c'),
       'ã',
@@ -466,10 +466,12 @@ QUnit.test(
 QUnit.test(
   'should be able to conditionally decode a single malformed cookie',
   function (assert) {
-    assert.expect(4)
-    var cookies = Cookies.withConverter(function (value, name) {
-      if (name === 'escaped') {
-        return unescape(value)
+    assert.expect(2)
+    var cookies = Cookies.withConverter({
+      read: function (value, name) {
+        if (name === 'escaped') {
+          return unescape(value)
+        }
       }
     })
 
@@ -477,31 +479,16 @@ QUnit.test(
     assert.strictEqual(
       cookies.get('escaped'),
       '北',
-      'should use a custom method for escaped cookie'
-    )
-
-    document.cookie = 'encoded=%E4%BA%AC'
-    assert.strictEqual(
-      cookies.get('encoded'),
-      '京',
-      'should use the default encoding for the rest'
+      'should use custom read converter when retrieving single cookies'
     )
 
     assert.deepEqual(
       cookies.get(),
       {
-        escaped: '北',
-        encoded: '京'
+        escaped: '北'
       },
-      'should retrieve everything'
+      'should use custom read converter when retrieving all cookies'
     )
-
-    Object.keys(cookies.get()).forEach(function (name) {
-      cookies.remove(name, {
-        path: ''
-      })
-    })
-    assert.strictEqual(document.cookie, '', 'should remove everything')
   }
 )
 

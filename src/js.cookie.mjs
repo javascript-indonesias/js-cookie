@@ -22,13 +22,7 @@ var rfc6265Converter = {
 }
 
 function init (converter) {
-  // normalize converter
-  if (!converter.read) {
-    converter = {
-      read: converter,
-      write: converter.write || rfc6265Converter.write
-    }
-  }
+  converter = extend(rfc6265Converter, converter)
 
   function set (key, value, attributes) {
     if (typeof document === 'undefined') {
@@ -94,8 +88,7 @@ function init (converter) {
 
       try {
         var name = rfc6265Converter.read(parts[0])
-        jar[name] =
-          converter.read(cookie, name) || rfc6265Converter.read(cookie, name)
+        jar[name] = converter.read(cookie, name)
 
         if (key === name) {
           break
