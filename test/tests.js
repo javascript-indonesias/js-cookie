@@ -1,5 +1,44 @@
 /* global Cookies, QUnit, lifecycle, quoted */
 
+QUnit.module('setup', lifecycle)
+
+QUnit.test('api instance creation', function (assert) {
+  assert.expect(4)
+
+  var api
+
+  api = Cookies.withAttributes({ path: '/bar' })
+  assert.ok(
+    api.set('c', 'v').match(/c=v; path=\/bar/),
+    'should set up default cookie attributes'
+  )
+  api = Cookies.withAttributes({ sameSite: 'Lax' })
+  assert.notOk(
+    api.set('c', 'v').match(/c=v; path=\/bar/),
+    'should set up cookie attributes each time from original'
+  )
+
+  api = Cookies.withConverter({
+    write: function (value, name) {
+      return value.toUpperCase()
+    }
+  }).withAttributes({ path: '/foo' })
+  assert.ok(
+    api.set('c', 'v').match(/c=V; path=\/foo/),
+    'should allow setting up converters followed by default cookie attributes'
+  )
+
+  api = Cookies.withAttributes({ path: '/foo' }).withConverter({
+    write: function (value, name) {
+      return value.toUpperCase()
+    }
+  })
+  assert.ok(
+    api.set('c', 'v').match(/c=V; path=\/foo/),
+    'should allow setting up default cookie attributes followed by converter'
+  )
+})
+
 QUnit.module('read', lifecycle)
 
 QUnit.test('simple value', function (assert) {
@@ -283,37 +322,33 @@ QUnit.test('return value', function (assert) {
   assert.strictEqual(actual, expected, 'should return written cookie string')
 })
 
-QUnit.test('predefined defaults', function (assert) {
+QUnit.test('predefined path attribute', function (assert) {
   assert.expect(1)
-  assert.deepEqual(Cookies.defaults, { path: '/' }, 'should contain the path')
+  assert.ok(
+    Cookies.set('c', 'v').match(/path=\/$/),
+    'should use root path when not configured otherwise'
+  )
 })
 
 QUnit.test('API for changing defaults', function (assert) {
-  assert.expect(4)
+  assert.expect(3)
 
-  Cookies.defaults.path = '/foo'
+  var api
+
+  api = Cookies.withAttributes({ path: '/foo' })
   assert.ok(
-    Cookies.set('c', 'v').match(/path=\/foo/),
+    api.set('c', 'v').match(/path=\/foo/),
     'should use attributes from defaults'
   )
-
-  Cookies.defaults = { path: '/bar' }
   assert.ok(
-    Cookies.set('c', 'v').match(/path=\/bar/),
-    'should allow to replace defaults object as a whole'
-  )
-
-  assert.ok(
-    Cookies.set('c', 'v', { path: '/baz' }).match(/path=\/baz/),
+    api.set('c', 'v', { path: '/baz' }).match(/path=\/baz/),
     'attributes argument has precedence'
   )
 
-  delete Cookies.defaults.path
-  assert.notOk(Cookies.set('c', 'v').match(/path=/), 'should not set any path')
-  Cookies.remove('c')
+  api = Cookies.withAttributes({ path: undefined })
+  assert.notOk(api.set('c', 'v').match(/path=/), 'should not set any path')
 
-  // Reset defaults
-  Cookies.defaults = { path: '/' }
+  Cookies.remove('c')
 })
 
 QUnit.test('true secure value', function (assert) {

@@ -21,15 +21,13 @@ var rfc6265Converter = {
   }
 }
 
-function init (converter) {
-  converter = extend(rfc6265Converter, converter)
-
+function init (converter, defaultAttributes) {
   function set (key, value, attributes) {
     if (typeof document === 'undefined') {
       return
     }
 
-    attributes = extend(api.defaults, attributes)
+    attributes = extend(defaultAttributes, attributes)
 
     if (typeof attributes.expires === 'number') {
       attributes.expires = new Date(Date.now() + attributes.expires * 864e5)
@@ -100,9 +98,6 @@ function init (converter) {
   }
 
   var api = {
-    defaults: {
-      path: '/'
-    },
     set: set,
     get: get,
     remove: function (key, attributes) {
@@ -114,11 +109,20 @@ function init (converter) {
         })
       )
     },
-    withConverter: init,
-    rfc6265Converter: rfc6265Converter
+    withAttributes: function (attributes) {
+      return init(this.converter, extend(this.attributes, attributes))
+    },
+    withConverter: function (converter) {
+      return init(extend(this.converter, converter), this.attributes)
+    },
+    rfc6265Converter: rfc6265Converter,
+    attributes: Object.freeze(defaultAttributes),
+    converter: Object.freeze(converter)
   }
 
-  return api
+  // Create an instance of the api while ensuring it cannot
+  // be tampered with...
+  return Object.freeze(api)
 }
 
-export default init(rfc6265Converter)
+export default init(rfc6265Converter, { path: '/' })
