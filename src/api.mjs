@@ -1,25 +1,5 @@
-function extend () {
-  var result = {}
-  for (var i = 0; i < arguments.length; i++) {
-    var attributes = arguments[i]
-    for (var key in attributes) {
-      result[key] = attributes[key]
-    }
-  }
-  return result
-}
-
-var rfc6265Converter = {
-  read: function (value, key) {
-    return value.replace(/(%[\dA-F]{2})+/gi, decodeURIComponent)
-  },
-  write: function (value, key) {
-    return encodeURIComponent(value).replace(
-      /%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g,
-      decodeURIComponent
-    )
-  }
-}
+import rfc6265Converter from './rfc6265.mjs'
+import extend from './extend.mjs'
 
 function init (converter, defaultAttributes) {
   function set (key, value, attributes) {
@@ -39,7 +19,7 @@ function init (converter, defaultAttributes) {
     value = converter.write(value, key)
 
     key = encodeURIComponent(key)
-      .replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent)
+      .replace(/%(2[346B]|5E|60|7C)/g, decodeURIComponent)
       .replace(/[()]/g, escape)
 
     var stringifiedAttributes = ''
@@ -97,7 +77,9 @@ function init (converter, defaultAttributes) {
     return key ? jar[key] : jar
   }
 
-  var api = {
+  // Create an instance of the api while ensuring it cannot be
+  // tampered with...
+  return Object.freeze({
     set: set,
     get: get,
     remove: function (key, attributes) {
@@ -115,14 +97,9 @@ function init (converter, defaultAttributes) {
     withConverter: function (converter) {
       return init(extend(this.converter, converter), this.attributes)
     },
-    rfc6265Converter: rfc6265Converter,
     attributes: Object.freeze(defaultAttributes),
     converter: Object.freeze(converter)
-  }
-
-  // Create an instance of the api while ensuring it cannot
-  // be tampered with...
-  return Object.freeze(api)
+  })
 }
 
 export default init(rfc6265Converter, { path: '/' })
