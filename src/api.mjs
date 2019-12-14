@@ -1,5 +1,5 @@
 import rfc6265Converter from './rfc6265.mjs'
-import extend from './extend.mjs'
+import assign from './assign.mjs'
 
 function init (converter, defaultAttributes) {
   function set (key, value, attributes) {
@@ -7,7 +7,7 @@ function init (converter, defaultAttributes) {
       return
     }
 
-    attributes = extend(defaultAttributes, attributes)
+    attributes = assign({}, defaultAttributes, attributes)
 
     if (typeof attributes.expires === 'number') {
       attributes.expires = new Date(Date.now() + attributes.expires * 864e5)
@@ -60,7 +60,7 @@ function init (converter, defaultAttributes) {
       var parts = cookies[i].split('=')
       var cookie = parts.slice(1).join('=')
 
-      if (cookie.charAt(0) === '"') {
+      if (cookie[0] === '"') {
         cookie = cookie.slice(1, -1)
       }
 
@@ -77,29 +77,27 @@ function init (converter, defaultAttributes) {
     return key ? jar[key] : jar
   }
 
-  // Create an instance of the api while ensuring it cannot be
-  // tampered with...
-  return Object.freeze({
+  return {
     set: set,
     get: get,
     remove: function (key, attributes) {
       set(
         key,
         '',
-        extend(attributes, {
+        assign({}, attributes, {
           expires: -1
         })
       )
     },
     withAttributes: function (attributes) {
-      return init(this.converter, extend(this.attributes, attributes))
+      return init(this.converter, assign({}, this.attributes, attributes))
     },
     withConverter: function (converter) {
-      return init(extend(this.converter, converter), this.attributes)
+      return init(assign({}, this.converter, converter), this.attributes)
     },
     attributes: Object.freeze(defaultAttributes),
     converter: Object.freeze(converter)
-  })
+  }
 }
 
 export default init(rfc6265Converter, { path: '/' })

@@ -1,6 +1,6 @@
 {
   "name": "js-cookie",
-  "version": "3.0.0-beta.0",
+  "version": "3.0.0-beta.2",
   "description": "A simple, lightweight JavaScript API for handling cookies",
   "browser": "dist/js.cookie.js",
   "module": "dist/js.cookie.mjs",
@@ -48,11 +48,11 @@
     "gzip-js": "^0.3.2",
     "prettier": "^1.18.2",
     "qunit": "^2.9.3",
-    "release-it": "^12.3.6",
+    "release-it": "^12.4.3",
     "rollup": "^1.20.3",
     "rollup-plugin-filesize": "^6.2.0",
     "rollup-plugin-license": "^0.13.0",
-    "rollup-plugin-terser": "^5.1.1",
+    "rollup-plugin-terser": "^5.1.3",
     "standard": "^14.1.0"
   }
 }
