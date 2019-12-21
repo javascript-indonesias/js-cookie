@@ -1,21 +1,17 @@
 {
-  "name": "js-cookie-webpack-example",
+  "name": "js-cookie-es-module-example",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "private": true,
   "scripts": {
-    "start": "node server.js",
-    "build": "npx webpack",
+    "start": "node src/main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "node-static": "^0.7.11",
-    "webpack": "^4.41.0",
-    "webpack-cli": "^3.3.9"
-  },
+  "devDependencies": {},
   "dependencies": {
     "js-cookie": "^3.0.0-beta.3"
   }
